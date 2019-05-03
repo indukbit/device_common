@@ -2,5 +2,7 @@
 ro.opengles.version=196610
 
 # Perf
-ro.min_freq_0=960000
-ro.min_freq_4=800000
+ro.min_freq_0=300000
+ro.min_freq_4=300000
+ro.max_freq_0=1460000
+ro.max_freq_4=960000
