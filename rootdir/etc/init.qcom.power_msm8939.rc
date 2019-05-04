@@ -85,11 +85,11 @@ on enable-low-power
 
     # Update foreground and background cpusets
     # Reserve CPU 7 for the top app
-    write /dev/cpuset/foreground/cpus 0-5
-    write /dev/cpuset/background/cpus 2-5
-    write /dev/cpuset/system-background/cpus 2-5
+    write /dev/cpuset/foreground/cpus 0-6
+    write /dev/cpuset/background/cpus 4-6
+    write /dev/cpuset/system-background/cpus 4-6
     write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/camera-daemon/cpus 2-6
+    write /dev/cpuset/camera-daemon/cpus 4-7
 
     rm /data/system/perfd/default_values
     start perfd
