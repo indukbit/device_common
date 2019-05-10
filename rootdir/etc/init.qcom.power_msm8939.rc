@@ -1,7 +1,8 @@
 on boot
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1651000
-    write /storecon_recursive /sys/devices/system/cpu
+    
+    restorecon_recursive /sys/devices/system/cpu
+
     chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
     chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
@@ -75,31 +76,89 @@ on boot
     write /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor interactive
     write /sys/devices/system/cpu/cpu7/cpufreq/scaling_governor interactive
 
+    # Since we have random max frequency and random limit interactive gov
+    # Set max frequency cpu
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1651000
     write /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq 1651000
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 1651000
     write /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq 1651000
-
     write /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq 1113000
     write /sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq 1113000
     write /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq 1113000
     write /sys/devices/system/cpu/cpu7/cpufreq/scaling_max_freq 1113000
 
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu5/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu6/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu7/cpufreq/scaling_min_freq 200000
 
-    # Update foreground and background cpusets
-    # Reserve CPU 7 for the top app
-    write /dev/cpuset/foreground/cpus 0-6
-    write /dev/cpuset/background/cpus 4-6
-    write /dev/cpuset/system-background/cpus 4-6
-    write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/camera-daemon/cpus 4-7
-
-    # Set idle GPU
-    write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 4
-    
     write /sys/module/msm_thermal/core_control/enabled 1
     write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
     rm /data/system/perfd/default_values
 
+on enable-low-power
+    start qcom-mem
+    write /proc/sys/kernel/sched_boost 1
+
+    # RPS mask
+    write /sys/class/net/rmnet0/queues/rx-0/rps_cpus 10
+
+    # Adaptive LMK
+    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
+    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 81250
+
+    # HMP scheduler load tracking settings
+    write /proc/sys/kernel/sched_window_stats_policy 3
+    write /proc/sys/kernel/sched_ravg_hist_size 5
+
+    # HMP Task packing settings for 8939, 8929
+    write /proc/sys/kernel/sched_small_task 20
+    write /proc/sys/kernel/sched_mostly_idle_load 30
+    write /proc/sys/kernel/sched_mostly_idle_nr_run 3
+
+    # Set Governor GPU and indle level
+    write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
+    write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 3
+
 on property:dev.bootcomplete=1
+    # Set frequency cpu0 - 3
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay "20000 1113600:50000"
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load 85
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate 20000
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq 1113600
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads "1 960000:85 1113600:90 1344000:80"
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time 50000
+
+    # Set frequency cpu4 - 7
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/above_hispeed_delay "25000 800000:50000"
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/go_hispeed_load 90
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate 40000
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq 998400
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy 0
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads "1 800000:90"
+    # write /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time 40000
+
+    
+    # HMP scheduler (big.Little cluster related) settings
+    write /proc/sys/kernel/sched_upmigrate 75
+    write /proc/sys/kernel/sched_downmigrate 60
+
+    # Enable low power modes
+    write /sys/module/lpm_levels/parameters/sleep_disabled 0
+
+    # Update foreground and background cpusets
+    # Reserve CPU 7 for the top app
+    write /dev/cpuset/foreground/cpus 0-6
+    write /dev/cpuset/foreground/boost/cpus 0-3
+    write /dev/cpuset/background/cpus 4
+    write /dev/cpuset/system-background/cpus 4-6
+    write /dev/cpuset/top-app/cpus 0-7
+
+    trigger enable-low-power
     write /dev/cpuctl/cpu.notify_on_migrate 0
     setprop sys.io.scheduler bfq
