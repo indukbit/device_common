@@ -141,7 +141,7 @@ on enable-low-power
     write /proc/sys/kernel/sched_mostly_idle_nr_run 3
 
     # Set Governor GPU and indle power level
-    # 0 is 550Mhz 1 is 465Mhz 2 is 440Mhz and 3 is 220Mhz
+    # 0 is 550Mhz 1 is 465Mhz 2 is 400Mhz and 3 is 220Mhz
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 3
 
