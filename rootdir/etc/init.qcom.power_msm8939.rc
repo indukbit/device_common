@@ -69,7 +69,7 @@ on boot
     write /sys/module/msm_pm/modes/cpu6/retention/idle_enabled 1
     write /sys/module/msm_pm/modes/cpu7/retention/idle_enabled 1
 
-    # Disable thermal control before set parameters
+    # Disable thermal control before set any parameters
     write /sys/module/msm_thermal/core_control/enabled 0
 
     write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor interactive
@@ -101,7 +101,7 @@ on boot
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time 40000
     write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 200000
      
-    # Enable core control
+    # Customize core control parameters
     write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 2
     write /sys/devices/system/cpu/cpu0/core_ctl/max_cpus 4
     write /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres 68
@@ -140,7 +140,8 @@ on enable-low-power
     write /proc/sys/kernel/sched_mostly_idle_load 30
     write /proc/sys/kernel/sched_mostly_idle_nr_run 3
 
-    # Set Governor GPU and indle level
+    # Set Governor GPU and indle power level
+    # 0 is 550Mhz 1 is 465Mhz 2 is 440Mhz and 3 is 220Mhz
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 3
 
