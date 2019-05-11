@@ -66,6 +66,7 @@ on boot
     write /sys/module/msm_pm/modes/cpu6/retention/idle_enabled 1
     write /sys/module/msm_pm/modes/cpu7/retention/idle_enabled 1
 
+    # Disable thermal control before set parameters
     write /sys/module/msm_thermal/core_control/enabled 0
 
     write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor interactive
