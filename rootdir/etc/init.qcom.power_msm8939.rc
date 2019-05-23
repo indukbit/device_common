@@ -1,108 +1,30 @@
 on boot
-    # Default android booting with performance governor
-    # Set it to interactive main gov for reducing heat
+    # Set cpu0 to interactive
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     
-    # Do this after set interactive main gov
-    restorecon_recursive /sys/devices/system/cpu
-
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_slack
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_loads
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/target_loads
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
-
-    write /sys/module/lpm_levels/enable_low_power/l2 4
-    write /sys/module/msm_pm/modes/cpu0/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu4/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu5/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu6/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu7/power_collapse/suspend_enabled 1
-
-    write /sys/module/msm_pm/modes/cpu0/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu4/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu5/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu6/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu7/power_collapse/idle_enabled 1
-
-    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu4/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu5/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu6/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu7/standalone_power_collapse/suspend_enabled 1
-
-    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu4/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu5/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu6/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu7/standalone_power_collapse/idle_enabled 1
-
-    write /sys/module/msm_pm/modes/cpu0/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu4/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu5/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu6/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu7/retention/idle_enabled 1
-
-    # Disable thermal control before set any parameters
-    write /sys/module/msm_thermal/core_control/enabled 0
-
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu5/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu7/cpufreq/scaling_governor interactive
-
-    
-    # Set frequency cpu0 - 3
+    # Set frequency for big cluster
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay "20000 1113600:50000"
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load 85
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate 20000
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq 1113600
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy 0
-    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads "1 960000:85 1113600:90 1344000:80"
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads 960000
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time 50000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 960000
 
-    Set frequency cpu4 - 7
-    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/above_hispeed_delay "25000 800000:50000"
+    Set frequency for little cluster
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor interactive
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/above_hispeed_delay "25000 1113600:50000"
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/go_hispeed_load 90
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate 40000
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq 998400
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy 0
-    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads "1 800000:90"
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads 998400
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time 40000
-    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 800000
      
     # Customize core control parameters
-    write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 2
+    write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 0
     write /sys/devices/system/cpu/cpu0/core_ctl/max_cpus 4
     write /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres 68
     write /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres 40
@@ -113,6 +35,12 @@ on boot
     write /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres 5
     write /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms 5000
     write /sys/devices/system/cpu/cpu4/core_ctl/not_preferred 1
+    
+    # Do this after set interactive main gov
+    restorecon_recursive /sys/devices/system/cpu
+    
+    # Disable thermal control before set any parameters
+    write /sys/module/msm_thermal/core_control/enabled 0
 
     # Enable thermal core_control now
     write /sys/module/msm_thermal/core_control/enabled 1
@@ -152,14 +80,6 @@ on property:dev.bootcomplete=1
 
     # Enable low power modes
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
-
-    # Update foreground and background cpusets
-    # Reserve CPU 7 for the top app
-    # write /dev/cpuset/foreground/cpus 0-6
-    # write /dev/cpuset/foreground/boost/cpus 0-3
-    # write /dev/cpuset/background/cpus 4
-    # write /dev/cpuset/system-background/cpus 4-6
-    # write /dev/cpuset/top-app/cpus 0-7
 
     trigger enable-low-power
     write /dev/cpuctl/cpu.notify_on_migrate 0
